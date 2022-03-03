@@ -11,49 +11,64 @@ class Appplication(ttk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        data_manager = DataManager()
+
         self.pack(fill=BOTH, expand=YES)
 
-        Header(self)
-
-        MenuBar(self)
-
-        """BODY"""
-
-        CadastroVendas(self)
-
-
-class Header:
-
-    def __init__(self, master, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        images_directory = "imagens/"
-        master.images = [
+        self.images_directory = "imagens/"
+        self.images = [
             ttk.PhotoImage(
                 name="logo",
-                file=images_directory + "erp_64px.png"),
+                file=self.images_directory + "erp_64px.png"),
             ttk.PhotoImage(
                 name="estoque",
-                file=images_directory + "boxes_24px.png"),
+                file=self.images_directory + "boxes_24px.png"),
             ttk.PhotoImage(
                 name="vendas",
-                file=images_directory + "cofrinho_24px.png"),
+                file=self.images_directory + "cofrinho_24px.png"),
             ttk.PhotoImage(
                 name="configurações",
-                file=images_directory + "settings_24px.png"),
+                file=self.images_directory + "settings_24px.png"),
             ttk.PhotoImage(
                 name="compras",
-                file=images_directory + "shopping-cart_24px.png")
+                file=self.images_directory + "shopping-cart_24px.png")
         ]
 
-        self = ttk.Frame(
-            master=master,
+        header = Header(
+            master=self,
             padding=20,
             bootstyle=SECONDARY
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=4,
+            sticky=EW
         )
-        # self.configure(padding=20)
-        self.grid(row=0, column=0, columnspan=4, sticky=EW)
-        # self.pack(side=LEFT)
+
+        # menu_bar = MenuBar(
+        #     master=header
+        # ).grid(
+        #     row=1,
+        #     column=0,
+        #     columnspan=4,
+        #     sticky=EW
+        # )
+
+        cadastro_vendas = CadastroVendas(
+            master=self
+        ).grid(
+            row=2,
+            column=0,
+            columnspan=4,
+            ipadx=100,
+            ipady=200
+        )
+
+
+class Header(ttk.Frame):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.header_label = ttk.Label(
             master=self,
@@ -71,15 +86,13 @@ class Header:
         self.header_label_2.pack(side=LEFT, padx=10)
 
 
-class MenuBar:
+class MenuBar(ttk.Frame):
 
-    def __init__(self, master, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # LARGURA DO APP = 3*100px (3 botões HEADER) = 300px
         largura_botao = 150  # px
         altura_botao = 7  # px
-        # ALTURA (ABAIXO) DEFINIDA PELO FRAME BODY (ipady)
 
         def compras_btn():
             print("Clicou nas Compras & Vendas.")
@@ -89,10 +102,6 @@ class MenuBar:
 
         def cadastro_btn():
             print("Clicou no Cadastro.")
-
-        self = ttk.Frame(master)
-        self.grid(row=1, column=0, columnspan=4, sticky=EW)
-        # self.pack(side=BOTTOM)
 
         self.estoque_menu_button = ttk.Button(
             master=self,
@@ -128,27 +137,21 @@ class MenuBar:
             side=LEFT, fill=BOTH, ipadx=largura_botao, ipady=altura_botao)
 
 
-# QUERIA COLOCAR A CLASSE CadastroVendas DENTRO DA CLASSE Body, MAS N SEI COMO FAZ
-# class Body:
-
-#     def __init__(self, master, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-
-#     CadastroVendas()
+class Body(ttk.Frame):
+    pass
 
 
-def popup_yes_no(message: str):
-    askyesno(message=message)
-    # print(f"O produto {} do fornecedor {} foi vendido em {} unidade(s) a um preço de R${}.")
+def popup_yes_no(msg_question: str, msg_conclusion: str):
+    confirma_dados: bool = askyesno(message=msg_question)
+    print("Dados confirmados.") if confirma_dados else print(
+        "Dados não confirmados.")
+    msg_conclusao = showinfo(message=msg_conclusion)
 
 
-class CadastroVendas:
+class CadastroVendas(ttk.Frame):
 
-    def __init__(self, master, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self = ttk.Frame(master)
-        self.grid(row=2, column=0, columnspan=4, ipadx=100, ipady=300)
 
         lbl_fornecedor = ttk.Label(
             self,
@@ -191,10 +194,15 @@ class CadastroVendas:
         btn_vendido = ttk.Button(
             self,
             style="success.TButton",
-            # bootsyle=SUCCESS,
             text="Vendido!",
             width=48,
             command=lambda: popup_yes_no(
-                "Confirma que os dados estão corretos?")
+                msg_question=f"""Confirma que os dados estão corretos?\n
+            Produto: {combobox_produto.get()}
+            Fornecedor: {combobox_fornecedor.get()}
+            Quantidade: {spinbox_quantidade.get()}
+            Preço de Venda: {entry_preco_venda.get()}""",
+                msg_conclusion=f"O produto {combobox_produto.get()} do fornecedor {combobox_fornecedor.get()} foi vendido em {spinbox_quantidade.get()} unidade(s) a um preço de R${entry_preco_venda.get()}."
+            )
         )
         btn_vendido.pack()
