@@ -141,11 +141,8 @@ class Body(ttk.Frame):
     pass
 
 
-def popup_yes_no(msg_question: str, msg_conclusion: str):
-    confirma_dados: bool = askyesno(message=msg_question)
-    print("Dados confirmados.") if confirma_dados else print(
-        "Dados não confirmados.")
-    msg_conclusao = showinfo(message=msg_conclusion)
+class Cadastro(ttk.Frame):
+    pass
 
 
 class CadastroVendas(ttk.Frame):
@@ -198,11 +195,48 @@ class CadastroVendas(ttk.Frame):
             width=48,
             command=lambda: popup_yes_no(
                 msg_question=f"""Confirma que os dados estão corretos?\n
-            Produto: {combobox_produto.get()}
-            Fornecedor: {combobox_fornecedor.get()}
-            Quantidade: {spinbox_quantidade.get()}
-            Preço de Venda: {entry_preco_venda.get()}""",
+        Produto: {combobox_produto.get()}
+        Fornecedor: {combobox_fornecedor.get()}
+        Quantidade: {spinbox_quantidade.get()}
+        Preço de Venda: {entry_preco_venda.get()}""",
                 msg_conclusion=f"O produto {combobox_produto.get()} do fornecedor {combobox_fornecedor.get()} foi vendido em {spinbox_quantidade.get()} unidade(s) a um preço de R${entry_preco_venda.get()}."
             )
         )
         btn_vendido.pack()
+
+
+class CadastroCompras(Cadastro):
+    pass
+
+
+class CadastroProduto(Cadastro):
+    pass
+
+
+class CadastroFornecedores(Cadastro):
+    pass
+
+
+class CadastroCompras(Cadastro):
+    pass
+
+
+class CadastroCompras(Cadastro):
+    pass
+
+
+class Lista(ttk.Frame):
+    pass
+
+
+class ListaProdutos(Lista):
+    pass
+
+
+def popup_yes_no(msg_question: str, msg_conclusion: str):
+    confirma_dados: bool = askyesno(message=msg_question)
+    if confirma_dados:
+        print("Dados confirmados.")
+        showinfo(message=msg_conclusion)
+    else:
+        print("Dados não confirmados.")
