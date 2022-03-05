@@ -176,22 +176,77 @@ class Body(ttk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.init_cadastro()
+
     def destroy_widget_children(self):
         for children in self.winfo_children():
             children.destroy()
 
     def init_estoque(self):
         self.destroy_widget_children()
+        Estoque(master=self).pack(
+            fill=BOTH,
+            expand=True
+        )
 
     def init_compras_vendas(self):
         self.destroy_widget_children()
+        ComprasVendas(master=self).pack(
+            fill=BOTH,
+            expand=True
+        )
 
     def init_cadastro(self):
         self.destroy_widget_children()
-        Cadastro(self).pack()
+        Cadastro(master=self).pack(
+            fill=BOTH,
+            expand=True
+        )
 
 
-class Cadastro(ttk.Frame):
+class Estoque(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class ComprasVendas(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.cadastro_compras = CadastroCompras(
+            master=self
+        )
+        self.cadastro_compras.pack(
+            side=LEFT,
+            fill=BOTH,
+            expand=True
+        )
+
+        self.cadastro_vendas = CadastroVendas(
+            master=self
+        )
+        self.cadastro_vendas.pack(
+            side=RIGHT,
+            fill=BOTH,
+            expand=True
+        )
+
+
+class CadastroCompras(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.compras = CadastroCompraVenda(
+            master=self,
+            venda_ou_compra="compra"
+        )
+        self.compras.pack(
+            fill=BOTH,
+            expand=True
+        )
+
+
+class CadastroVendas(ttk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -199,14 +254,47 @@ class Cadastro(ttk.Frame):
             master=self,
             venda_ou_compra="venda"
         )
-        self.vendas.pack(ipadx=99, ipady=50, pady=50)
-
-        self.compras = CadastroCompraVenda(
-            master=self,
-            venda_ou_compra="compra"
+        self.vendas.pack(
+            fill=BOTH,
+            expand=True
         )
-        self.compras.pack(ipadx=99, ipady=100)
 
+
+class Cadastro(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.cadastro_produto = CadastroProduto(
+            master=self
+        )
+        self.cadastro_produto.pack(
+            side=LEFT,
+            fill=BOTH,
+            expand=True
+        )
+
+        self.cadastro_fornecedores = CadastroFornecedor(
+            master=self
+        )
+        self.cadastro_fornecedores.pack(
+            side=RIGHT,
+            fill=BOTH,
+            expand=True
+        )
+
+
+class CadastroProduto(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        '''BOTAR OS WIDGETS FINAIS AQUI'''
+
+
+class CadastroFornecedor(ttk.Frame):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        '''BOTAR OS WIDGETS FINAIS AQUI'''
 
 
 class CadastroCompraVenda(ttk.Frame):
