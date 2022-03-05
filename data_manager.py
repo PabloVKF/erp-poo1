@@ -4,10 +4,6 @@ import pandas as pd
 import uuid
 
 
-def generate_id():
-    return uuid.uuid4()
-
-
 class DataManager:
     def __init__(self):
         self.file_directory = "dados/estoque.csv"
@@ -23,7 +19,7 @@ class DataManager:
         (sem o id)
         """
         row: list = row.split(",")
-        id = str(generate_id())[:5]
+        id = str(self.generate_id())[:5]
         row.insert(0, id)
         with open(self.file_directory, "a", newline="\n") as file_object:
             writer_object = writer(file_object)
@@ -52,6 +48,10 @@ class DataManager:
     def get_column_data(self, column_name: str) -> list:
         """column_name: id,produto,fornecedor,preco_compra,preco_venda,qtd,data,tempo"""
         return self.data[column_name].tolist()
+
+    @staticmethod
+    def generate_id():
+        return uuid.uuid4()
 
 
 if __name__ == "__main__":

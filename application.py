@@ -1,7 +1,8 @@
-import tkinter.messagebox
 from tkinter.messagebox import *
 from tkinter.font import BOLD
 from ttkbootstrap.constants import *
+
+import tkinter.messagebox
 import ttkbootstrap as ttk
 
 from data_manager import DataManager
@@ -21,7 +22,10 @@ class Application(ttk.Frame):
         )
         self.header.pack(side=TOP)
 
-        self.body = Body(self)
+        self.body = Body(
+            master=self,
+            data_manager=self.data_manager
+        )
         self.body.pack(
             side=BOTTOM,
             fill=BOTH,
@@ -173,8 +177,9 @@ class MenuBar(ttk.Frame):
 
 
 class Body(ttk.Frame):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data_manager, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.data_manager = data_manager
 
     def destroy_widget_children(self):
         for children in self.winfo_children():
@@ -188,57 +193,65 @@ class Body(ttk.Frame):
 
     def init_cadastro(self):
         self.destroy_widget_children()
-        Cadastro(self).pack()
+
+        self.cadastro = Cadastro(
+            master=self,
+            data_manager=self.data_manager
+        )
+        self.cadastro.pack()
 
 
 class Cadastro(ttk.Frame):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, data_manager, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.data_manager = data_manager
 
         self.vendas = CadastroCompraVenda(
             master=self,
-            venda_ou_compra="venda"
+            compra_ou_venda="venda",
+            data_manager=self.data_manager
         )
         self.vendas.pack(ipadx=99, ipady=50, pady=50)
 
         self.compras = CadastroCompraVenda(
             master=self,
-            venda_ou_compra="compra"
+            compra_ou_venda="compra",
+            data_manager=self.data_manager
         )
         self.compras.pack(ipadx=99, ipady=100)
 
 
-
 class CadastroCompraVenda(ttk.Frame):
-    def __init__(self, venda_ou_compra: str, *args, **kwargs):
+    def __init__(self, data_manager, compra_ou_venda: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.venda_ou_compra = venda_ou_compra
+        self.data_manager = data_manager
+        self.compra_ou_venda = compra_ou_venda
 
         self.lbl_title = ttk.Label(
             self,
-            text=f"CADASTRAR {self.venda_ou_compra.upper()}",
+            text=f"CADASTRAR {self.compra_ou_venda.upper()}",
             font=("Arial", 23, BOLD)
         )
         self.lbl_title.pack()
 
-        self.lista_produtos: list = DataManager().get_column_data("produto")
+        self.lista_produtos: list = self.data_manager.get_column_data("produto")
         self.lista_produtos = list(set(self.lista_produtos))
 
         self.combobox_produto = ttk.Combobox(
             self,
             width=47,
             values=self.lista_produtos)
-        self.combobox_produto.insert(-1, "Produto")
+        self.combobox_produto.insert(0, "Produto")
         self.combobox_produto.pack()
 
-        self.lista_fornecedores: list = DataManager().get_column_data("fornecedor")
+        self.lista_fornecedores: list = self.data_manager.get_column_data("fornecedor")
         self.lista_fornecedores = list(set(self.lista_fornecedores))
 
         self.combobox_fornecedor = ttk.Combobox(
             self,
             width=47,
             values=self.lista_fornecedores)
-        self.combobox_fornecedor.insert(-1, "Fornecedor")
+        self.combobox_fornecedor.insert(0, "Fornecedor")
         self.combobox_fornecedor.pack()
 
         self.spinbox_quantidade = ttk.Spinbox(
@@ -246,12 +259,12 @@ class CadastroCompraVenda(ttk.Frame):
             from_=0,
             to=99,
             width=45)
-        self.spinbox_quantidade.insert(-1, "Quantidade")
+        self.spinbox_quantidade.insert(0, "Quantidade")
         self.spinbox_quantidade.pack()
 
-        self.msg_preco = f"Preço de {self.venda_ou_compra.capitalize()}"
-        self.venda = self.venda_ou_compra.strip()[-1]
-        self.msg_pers = "vendido" if self.venda else "comprado"
+        self.msg_preco: str = f"Preço de {self.compra_ou_venda.capitalize()}"
+        self.venda: bool = self.compra_ou_venda.strip()[-1] in "vV"
+        self.msg_pers: str = "vendido" if self.venda else "comprado"
 
         self.entry_preco = ttk.Entry(
             self,
@@ -278,10 +291,16 @@ class CadastroCompraVenda(ttk.Frame):
                     f"Preço de {self.venda_ou_compra.capitalize()}: {self.entry_preco_venda.get()}"
         )
         if confirmation:
+            data_manager = self.data_manager
+            if self.venda:
+                data_manager.delete_row()
+            else:
+                data_manager.insert_row()
+
             tkinter.messagebox.showinfo(
                 title="Dados confirmados.",
                 message=f"O produto {self.combobox_produto.get()} do fornecedor {self.combobox_fornecedor.get()} foi "
-                        f"vendido em {self.spinbox_quantidade.get()} unidade(s) a um preço "
+                        f"{self.msg_pers} em {self.spinbox_quantidade.get()} unidade(s) a um preço "
                         f"de R${self.entry_preco_venda.get()}. "
             )
         else:
