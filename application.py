@@ -8,7 +8,7 @@ from data_manager import DataManager
 from constantes.directory_paths import *
 
 
-class Appplication(ttk.Frame):
+class Application(ttk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pack(fill=BOTH, expand=YES)
@@ -150,48 +150,46 @@ class MenuBar(ttk.Frame):
 
     def estoque_btn(self):
         body_instance = self.get_body_instance()
-        self.destroy_widget_children(instance=body_instance)
-
+        body_instance.init_estoque()
         print("Clicou no Estoque.")
 
     def compras_btn(self):
         body_instance = self.get_body_instance()
-        self.destroy_widget_children(instance=body_instance)
-
+        body_instance.init_compras_vendas()
         print("Clicou nas Compras & Vendas.")
 
     def cadastro_btn(self):
         body_instance = self.get_body_instance()
-        self.destroy_widget_children(instance=body_instance)
         body_instance.init_cadastro()
         print("Clicou no Cadastro.")
 
     def get_body_instance(self):
         main_instance = self
-        while not isinstance(main_instance, Appplication):
+        while not isinstance(main_instance, Application):
             main_instance = main_instance.master
         for instance in main_instance.winfo_children():
             if isinstance(instance, Body):
                 return instance
-
-    @staticmethod
-    def destroy_widget_children(instance):
-        for children in instance.winfo_children():
-            children.destroy()
 
 
 class Body(ttk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def destroy_widget_children(self):
+        for children in self.winfo_children():
+            children.destroy()
+
     def init_estoque(self):
-        pass
+        self.destroy_widget_children()
 
     def init_compras_vendas(self):
-        pass
+        self.destroy_widget_children()
 
     def init_cadastro(self):
+        self.destroy_widget_children()
         self.cadastro = Cadastro(self)
+        self.cadastro.pack()
 
 
 class Cadastro(ttk.Frame):

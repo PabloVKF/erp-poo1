@@ -2,7 +2,7 @@ from tkinter import messagebox
 
 import ttkbootstrap as ttk
 
-from application import Appplication
+from application import Application
 
 
 def on_closing():
@@ -16,6 +16,6 @@ if __name__ == "__main__":
         themename="litera",
         resizable=(False, False)
     )
-    Appplication(app)
+    Application(app)
     app.protocol("WM_DELETE_WINDOW", on_closing)
     app.mainloop()
