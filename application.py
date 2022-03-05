@@ -188,8 +188,7 @@ class Body(ttk.Frame):
 
     def init_cadastro(self):
         self.destroy_widget_children()
-        self.cadastro = Cadastro(self)
-        self.cadastro.pack()
+        Cadastro(self).pack()
 
 
 class Cadastro(ttk.Frame):
