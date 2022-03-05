@@ -12,5 +12,3 @@ id,produto,fornecedor,preco_compra,preco_venda,qtd,data,tempo
 11,Celular,Samsung,4.00,5.69,17,12/02/2022,22:17:00
 12,Fone,Microsoft,13.00,24.87,4,24/12/2021,22:02:41
 13,Meia,Apple,5.00,7.60,9,26/01/2022,11:13:17
-14,Bermuda,Apple,19.00,22.89,4,14/12/2021,17:59:37
-15,Camiseta,Havan,7.00,8.18,16,26/02/2022,01:24:00

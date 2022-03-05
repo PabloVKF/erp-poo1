@@ -1,0 +1,1 @@
+IMAGENS_PATH = "imagens/"

@@ -22,16 +22,21 @@ def datetime_generator(date_start: datetime, date_end: datetime):
 def data_generator():
     lista_produtos = "Faca Mouse Celular Camiseta Fone Monitor Bermuda Carregador Meia".split()
     lista_fornecedores = "Apple Microsoft Samsung Havan Renner Riachuelo".split()
-    for i in range(15):
-        date, time = datetime_generator("01/12/2021", "01/03/2022").split()
-        qtd = randint(1, 30)
-        custo = randint(1, 20)
-        margem = 1 + random()
-        preco_venda = custo * margem
-        produto = choice(lista_produtos)
-        fornecedor = choice(lista_fornecedores)
+    # for i in range(15):
+    #     date, time = datetime_generator("01/12/2021", "01/03/2022").split()
+    #     qtd = randint(1, 30)
+    #     custo = randint(1, 20)
+    #     margem = 1 + random()
+    #     preco_venda = custo * margem
+    #     produto = choice(lista_produtos)
+    #     fornecedor = choice(lista_fornecedores)
+    #     print(
+    #         f"{i+1},{produto},{fornecedor},{custo:.2f},{preco_venda:.2f},{qtd},{date},{time}"
+    #     )
+    for i, fornecedor in enumerate(lista_fornecedores):
         print(
-            f"{i+1},{produto},{fornecedor},{custo:.2f},{preco_venda:.2f},{qtd},{date},{time}")
+            f"{i + 1},{fornecedor}"
+        )
 
 
 data_generator()

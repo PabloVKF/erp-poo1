@@ -10,7 +10,7 @@ def generate_id():
 
 class DataManager:
     def __init__(self):
-        self.file_directory = "dados/registros.csv"
+        self.file_directory = "dados/estoque.csv"
         self.data: pd.DataFrame = pd.read_csv(self.file_directory)
 
     def update_data(self) -> None:
@@ -28,12 +28,18 @@ class DataManager:
         with open(self.file_directory, "a", newline="\n") as file_object:
             writer_object = writer(file_object)
             writer_object.writerow(row)
-            file_object.close()
+
+    def delete_row(self, index_data: int):
+        with open(self.file_directory, "r") as file:
+            r: list = file.read().split()
+            for line in r:
+                print(line)
+            file = r.pop(index_data)
 
     def delete_item_everywhere(self, column_name: str, item_name: str) -> None:
         """
         Apaga todas as linhas que possuem item_name.
-        O correto seria passar apenas o index da linha a ser deletada.
+        O correto seria passar apenas o index ou id da linha a ser deletada.
         column_name: "produto"
         item_name:   "Camiseta"
         """
@@ -46,3 +52,8 @@ class DataManager:
     def get_column_data(self, column_name: str) -> list:
         """column_name: id,produto,fornecedor,preco_compra,preco_venda,qtd,data,tempo"""
         return self.data[column_name].tolist()
+
+
+if __name__ == "__main__":
+    data_manager = DataManager()
+    data_manager.delete_row(10)
