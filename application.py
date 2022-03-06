@@ -1,6 +1,8 @@
 from tkinter.messagebox import *
 from tkinter.font import BOLD
+from turtle import width
 from ttkbootstrap.constants import *
+from datetime import date, datetime
 
 import tkinter.messagebox
 import ttkbootstrap as ttk
@@ -179,7 +181,10 @@ class MenuBar(ttk.Frame):
 class Body(ttk.Frame):
     def __init__(self, data_manager, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.data_manager = data_manager
+
+        self.init_cadastro()
 
     def destroy_widget_children(self):
         for children in self.winfo_children():
@@ -187,23 +192,90 @@ class Body(ttk.Frame):
 
     def init_estoque(self):
         self.destroy_widget_children()
+        Estoque(
+            master=self,
+            data_manager=self.data_manager
+        ).pack(
+            fill=BOTH,
+            expand=True
+        )
 
     def init_compras_vendas(self):
         self.destroy_widget_children()
+        ComprasVendas(
+            master=self,
+            data_manager=self.data_manager
+        ).pack(
+            fill=BOTH,
+            expand=True
+        )
 
     def init_cadastro(self):
         self.destroy_widget_children()
+        Cadastro(
+            master=self,
+            data_manager=self.data_manager
+        ).pack(
+            fill=BOTH,
+            expand=True
+        )
 
-        self.cadastro = Cadastro(
+
+class Estoque(ttk.Frame):
+    def __init__(self, data_manager=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.data_manager = data_manager
+
+
+class ComprasVendas(ttk.Frame):
+    def __init__(self, data_manager=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.data_manager = data_manager
+
+        self.cadastro_compras = CadastroCompras(
             master=self,
             data_manager=self.data_manager
         )
-        self.cadastro.pack()
+        self.cadastro_compras.pack(
+            side=LEFT,
+            fill=BOTH,
+            expand=True
+        )
+
+        self.cadastro_vendas = CadastroVendas(
+            master=self,
+            data_manager=self.data_manager
+        )
+        self.cadastro_vendas.pack(
+            side=RIGHT,
+            fill=BOTH,
+            expand=True
+        )
 
 
-class Cadastro(ttk.Frame):
+class CadastroCompras(ttk.Frame):
     def __init__(self, data_manager, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.data_manager = data_manager
+
+        self.compras = CadastroCompraVenda(
+            master=self,
+            compra_ou_venda="compra",
+            data_manager=self.data_manager
+        )
+        self.compras.pack(
+            fill=BOTH,
+            expand=True
+        )
+
+
+class CadastroVendas(ttk.Frame):
+    def __init__(self, data_manager, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.data_manager = data_manager
 
         self.vendas = CadastroCompraVenda(
@@ -211,30 +283,167 @@ class Cadastro(ttk.Frame):
             compra_ou_venda="venda",
             data_manager=self.data_manager
         )
-        self.vendas.pack(ipadx=99, ipady=50, pady=50)
+        self.vendas.pack(
+            fill=BOTH,
+            expand=True,
+        )
 
-        self.compras = CadastroCompraVenda(
+
+class Cadastro(ttk.Frame):
+    def __init__(self, data_manager=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.data_manager = data_manager
+
+        self.cadastro_produto = CadastroProduto(
             master=self,
-            compra_ou_venda="compra",
             data_manager=self.data_manager
         )
-        self.compras.pack(ipadx=99, ipady=100)
+        self.cadastro_produto.pack(
+            side=LEFT,
+            fill=BOTH,
+            expand=True
+        )
+
+        self.cadastro_fornecedores = CadastroFornecedor(
+            master=self,
+            data_manager=self.data_manager
+        )
+        self.cadastro_fornecedores.pack(
+            side=RIGHT,
+            fill=BOTH,
+            expand=True
+        )
+
+
+class CadastroProduto(ttk.Frame):
+    def __init__(self, data_manager, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.data_manager = data_manager
+
+        self.lbl_title = ttk.Label(
+            self,
+            text=f"CADASTRAR NOVO PRODUTO",
+            font=("Arial", 23, BOLD)
+        )
+        self.lbl_title.pack()
+
+        self.novo_produto = ttk.Entry(
+            master=self,
+            width=49
+        )
+        self.novo_produto.insert(0, "Nome do Novo Produto")
+        self.novo_produto.pack()
+
+        self.nome_forecedores: list = self.data_manager.get_produtos_and_fornecedor()[
+            1]
+        self.nome_forecedores = list(set(self.nome_forecedores))
+
+        self.combobox_fornecedor = ttk.Combobox(
+            self,
+            width=47,
+            values=self.nome_forecedores)
+        self.combobox_fornecedor.insert(0, "Fornecedores")
+        self.combobox_fornecedor.pack()
+
+        self.btn_action = ttk.Button(
+            self,
+            style="success.TButton",
+            text="Cadastrar Produto!",
+            width=47,
+            command=self.popup_confirmacao
+        )
+        self.btn_action.pack()
+
+    def popup_confirmacao(self):
+        self.row_produto = f"{self.novo_produto.get()},{self.combobox_fornecedor.get()}"
+
+        confirmation: bool = tkinter.messagebox.askyesno(
+            title="ATENÇÃO!",
+            message=f"Confirma que os dados estão corretos?"
+        )
+        if confirmation:
+            self.data_manager.insert_row(2, self.row_produto)
+            print(self.row_produto)
+
+            showinfo(
+                title="SUCESSO!",
+                message="Cadastro realizado com sucesso!"
+            )
+        else:
+            print("Dados não confirmados.")
+
+        '''BOTAR OS WIDGETS FINAIS AQUI'''
+
+
+class CadastroFornecedor(ttk.Frame):
+    def __init__(self, data_manager, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.data_manager = data_manager
+
+        self.lbl_title = ttk.Label(
+            self,
+            text=f"CADASTRAR NOVO FORNECEDOR",
+            font=("Arial", 23, BOLD)
+        )
+        self.lbl_title.pack()
+
+        self.novo_fornecedor = ttk.Entry(
+            master=self,
+            width=49
+        )
+        self.novo_fornecedor.insert(0, "Nome do Novo Fornecedor")
+        self.novo_fornecedor.pack()
+
+        self.btn_action = ttk.Button(
+            self,
+            style="success.TButton",
+            text="Cadastrar Fornecedor!",
+            width=47,
+            command=self.popup_confirmacao
+        )
+        self.btn_action.pack()
+
+    def popup_confirmacao(self):
+
+        self.row_fornecedor = f"{self.novo_fornecedor.get()}"
+
+        confirmation: bool = tkinter.messagebox.askyesno(
+            title="ATENÇÃO!",
+            message=f"Confirma que os dados estão corretos?"
+        )
+        if confirmation:
+            self.data_manager.insert_row(1, self.row_fornecedor)
+            print(self.row_fornecedor)
+
+            showinfo(
+                title="SUCESSO!",
+                message="Cadastro realizado com sucesso!"
+            )
+        else:
+            print("Dados não confirmados.")
+
+        '''BOTAR OS WIDGETS FINAIS AQUI'''
 
 
 class CadastroCompraVenda(ttk.Frame):
     def __init__(self, data_manager, compra_ou_venda: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.data_manager = data_manager
         self.compra_ou_venda = compra_ou_venda
 
         self.lbl_title = ttk.Label(
             self,
-            text=f"CADASTRAR {self.compra_ou_venda.upper()}",
+            text=f"REGISTRAR {self.compra_ou_venda.upper()}",
             font=("Arial", 23, BOLD)
         )
         self.lbl_title.pack()
 
-        self.lista_produtos: list = self.data_manager.get_column_data("produto")
+        self.lista_produtos: list = self.data_manager.get_produtos_and_fornecedor()[
+            0]
         self.lista_produtos = list(set(self.lista_produtos))
 
         self.combobox_produto = ttk.Combobox(
@@ -244,7 +453,8 @@ class CadastroCompraVenda(ttk.Frame):
         self.combobox_produto.insert(0, "Produto")
         self.combobox_produto.pack()
 
-        self.lista_fornecedores: list = self.data_manager.get_column_data("fornecedor")
+        self.lista_fornecedores: list = self.data_manager.get_produtos_and_fornecedor()[
+            1]
         self.lista_fornecedores = list(set(self.lista_fornecedores))
 
         self.combobox_fornecedor = ttk.Combobox(
@@ -256,14 +466,14 @@ class CadastroCompraVenda(ttk.Frame):
 
         self.spinbox_quantidade = ttk.Spinbox(
             self,
-            from_=0,
+            from_=1,
             to=99,
             width=45)
         self.spinbox_quantidade.insert(0, "Quantidade")
         self.spinbox_quantidade.pack()
 
         self.msg_preco: str = f"Preço de {self.compra_ou_venda.capitalize()}"
-        self.venda: bool = self.compra_ou_venda.strip()[-1] in "vV"
+        self.venda: bool = self.compra_ou_venda.strip()[0] in "vV"
         self.msg_pers: str = "vendido" if self.venda else "comprado"
 
         self.entry_preco = ttk.Entry(
@@ -273,35 +483,52 @@ class CadastroCompraVenda(ttk.Frame):
         self.entry_preco.insert(0, self.msg_preco)
         self.entry_preco.pack()
 
+        self.today: datetime = date.today()
+        self.current_date: str = str(self.today.strftime("%d/%m/%Y"))
+
+        self.current_time: str = str(datetime.now().strftime("%H:%M:%S"))
+
+        self.date_entry = ttk.DateEntry(
+            master=self,
+            startdate=self.today,
+            dateformat=r"%d/%m/%Y",
+            bootstyle=DEFAULT,
+        )
+        self.date_entry.configure(state=DISABLED)
+        self.date_entry.pack()
+
         self.btn_action = ttk.Button(
             self,
             style="success.TButton",
-            text="Vendido!" if self.venda in "vV" else "Comprado!",
+            text="Vendido!" if self.venda else "Comprado!",
             width=47,
-            command=self.popup_confirmacao_venda
+            command=self.popup_confirmacao
         )
         self.btn_action.pack()
 
-    def popup_confirmacao_venda(self):
-        confirmation = tkinter.messagebox.askyesno(
-            title="Confirma que os dados estão corretos?",
-            message=f"Produto: {self.combobox_produto.get()}\n"
-                    f"Fornecedor: {self.combobox_fornecedor.get()}\n"
-                    f"Quantidade: {self.spinbox_quantidade.get()}\n"
-                    f"Preço de {self.venda_ou_compra.capitalize()}: {self.entry_preco_venda.get()}"
+    def popup_confirmacao(self):
+
+        row1 = f"{self.combobox_produto.get()},{self.combobox_fornecedor.get()},"
+        row2 = f"{self.entry_preco.get()},{self.spinbox_quantidade.get()},"
+        row3 = f"{self.current_date},{self.current_time}"
+        row_compra_venda: str = row1 + row2 + row3
+
+        confirmation: bool = tkinter.messagebox.askyesno(
+            title="ATENÇÃO!",
+            message=f"Confirma que os dados estão corretos?"
         )
         if confirmation:
-            data_manager = self.data_manager
-            if self.venda:
-                data_manager.delete_row()
-            else:
-                data_manager.insert_row()
+            print(self.venda)
+            print(row_compra_venda)
 
-            tkinter.messagebox.showinfo(
-                title="Dados confirmados.",
-                message=f"O produto {self.combobox_produto.get()} do fornecedor {self.combobox_fornecedor.get()} foi "
-                        f"{self.msg_pers} em {self.spinbox_quantidade.get()} unidade(s) a um preço "
-                        f"de R${self.entry_preco_venda.get()}. "
+            if self.venda:
+                self.data_manager.insert_row(4, row_compra_venda)
+            else:
+                self.data_manager.insert_row(3, row_compra_venda)
+
+            showinfo(
+                title="SUCESSO!",
+                message="Cadastro realizado com sucesso!"
             )
         else:
             print("Dados não confirmados.")

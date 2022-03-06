@@ -1,10 +1,16 @@
-id, produto
-1,Faca
-2,Mouse
-3,Celular
-4,Camiseta
-5,Fone
-6,Monitor
-7,Bermuda
-8,Carregador
-9,Meia
+id,produto,fornecedor
+1,Faca,Havan
+2,Mouse,Apple
+10,Mouse,Microsoft
+3,Celular,Samsung
+11,Celular,Apple
+4,Camiseta,Renner
+4,Camiseta,Riachuelo
+5,Fone,Apple
+12,Fone,Samsung
+13,Fone,Microsoft
+6,Monitor,Samsung
+7,Bermuda,Riachuelo
+8,Carregador,Apple
+9,Meia,Renner49eb9
+7153b,Arroto,Microsoft
