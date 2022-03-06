@@ -26,13 +26,16 @@ class Application(ttk.Frame):
 
         self.body = Body(
             master=self,
-            data_manager=self.data_manager
+            data_manager=self.data_manager,
+            padding=20,
+            height=600
         )
         self.body.pack(
             side=BOTTOM,
             fill=BOTH,
             expand=True
         )
+        self.body.pack_propagate(False)
 
 
 class Header(ttk.Frame):
@@ -322,19 +325,35 @@ class CadastroProduto(ttk.Frame):
 
         self.data_manager = data_manager
 
+        self.tree_produtos = ttk.Treeview(
+            master=self,
+            style=INFO
+        )
+        self.tree_produtos['columns'] = ('ID', 'Nome', 'Fornecedor')
+        self.tree_produtos.column("#0", anchor=CENTER, width=0, minwidth=0, stretch=NO)
+        self.tree_produtos.column("ID", anchor=CENTER, width=40, minwidth=0)
+        self.tree_produtos.column("Nome", anchor=CENTER, width=150, minwidth=0)
+        self.tree_produtos.column("Fornecedor", anchor=CENTER, width=150, minwidth=0)
+        self.tree_produtos.heading("#0", text="Label")
+        self.tree_produtos.heading("ID", text="ID")
+        self.tree_produtos.heading("Nome", text="Nome")
+        self.tree_produtos.heading("Fornecedor", text="Fornecedor")
+        self.tree_produtos.pack(padx=30, pady=10, fill=BOTH, expand=YES)
+        self.update_tree()
+
         self.lbl_title = ttk.Label(
             self,
             text=f"CADASTRAR NOVO PRODUTO",
             font=("Arial", 23, BOLD)
         )
-        self.lbl_title.pack()
+        self.lbl_title.pack(pady=(30, 20))
 
         self.novo_produto = ttk.Entry(
             master=self,
             width=49
         )
         self.novo_produto.insert(0, "Nome do Novo Produto")
-        self.novo_produto.pack()
+        self.novo_produto.pack(pady=5)
 
         self.nome_forecedores: list = self.data_manager.get_produtos_and_fornecedor()[
             1]
@@ -345,7 +364,7 @@ class CadastroProduto(ttk.Frame):
             width=47,
             values=self.nome_forecedores)
         self.combobox_fornecedor.insert(0, "Fornecedores")
-        self.combobox_fornecedor.pack()
+        self.combobox_fornecedor.pack(pady=5)
 
         self.btn_action = ttk.Button(
             self,
@@ -354,7 +373,29 @@ class CadastroProduto(ttk.Frame):
             width=47,
             command=self.popup_confirmacao
         )
-        self.btn_action.pack()
+        self.btn_action.pack(pady=5)
+
+        self.btn_delet = ttk.Button(
+            master=self,
+            text="Deletar produtos selecionados!",
+            width=47,
+            style=DANGER
+        )
+        self.btn_delet.pack(pady=5)
+
+    def update_tree(self):
+        self.clean_tree()
+        produtos: list = self.data_manager.get_produtos()
+        for row in produtos:
+            self.tree_produtos.insert(
+                parent='',
+                index=END,
+                iid=row[0],
+                values=row
+            )
+
+    def clean_tree(self):
+        self.tree_produtos.delete(*self.tree_produtos.get_children())
 
     def popup_confirmacao(self):
         self.row_produto = f"{self.novo_produto.get()},{self.combobox_fornecedor.get()}"
@@ -383,19 +424,33 @@ class CadastroFornecedor(ttk.Frame):
 
         self.data_manager = data_manager
 
+        self.tree_fornecedores = ttk.Treeview(
+            master=self,
+            bootstyle=INFO
+        )
+        self.tree_fornecedores['columns'] = ('ID', 'Fornecedor')
+        self.tree_fornecedores.column("#0", anchor=CENTER, width=0, minwidth=0, stretch=NO)
+        self.tree_fornecedores.column("ID", anchor=CENTER, width=10, minwidth=0)
+        self.tree_fornecedores.column("Fornecedor", anchor=CENTER, width=150, minwidth=0)
+        self.tree_fornecedores.heading("#0", text="Label")
+        self.tree_fornecedores.heading("ID", text="ID")
+        self.tree_fornecedores.heading("Fornecedor", text="Fornecedor")
+        self.tree_fornecedores.pack(padx=30, pady=10, fill=BOTH, expand=YES)
+        self.update_tree()
+
         self.lbl_title = ttk.Label(
             self,
             text=f"CADASTRAR NOVO FORNECEDOR",
             font=("Arial", 23, BOLD)
         )
-        self.lbl_title.pack()
+        self.lbl_title.pack(pady=(30, 20))
 
         self.novo_fornecedor = ttk.Entry(
             master=self,
             width=49
         )
         self.novo_fornecedor.insert(0, "Nome do Novo Fornecedor")
-        self.novo_fornecedor.pack()
+        self.novo_fornecedor.pack(pady=10)
 
         self.btn_action = ttk.Button(
             self,
@@ -404,7 +459,29 @@ class CadastroFornecedor(ttk.Frame):
             width=47,
             command=self.popup_confirmacao
         )
-        self.btn_action.pack()
+        self.btn_action.pack(pady=10)
+
+        self.btn_delet = ttk.Button(
+            master=self,
+            text="Deletar fornecedores selecionados!",
+            width=47,
+            style=DANGER
+        )
+        self.btn_delet.pack(pady=(10, 20))
+
+    def update_tree(self):
+        self.clean_tree()
+        fornecedores: list = self.data_manager.get_fornecedores()
+        for row in fornecedores:
+            self.tree_fornecedores.insert(
+                parent='',
+                index=END,
+                iid=row[0],
+                values=row
+            )
+
+    def clean_tree(self):
+        self.tree_fornecedores.delete(*self.tree_fornecedores.get_children())
 
     def popup_confirmacao(self):
 

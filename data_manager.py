@@ -1,7 +1,7 @@
 from csv import writer
-
 import pandas as pd
 import uuid
+from typing import List
 
 
 class DataManager:
@@ -78,13 +78,21 @@ class DataManager:
         enquanto a segunda, seus respectivos fornecedores, mas sem repetição."""
         return self.produtos_data["produto"].tolist(), self.produtos_data["fornecedor"].tolist()
 
-    def get_fornecedores(self):
+    def get_fornecedores_name(self):
         """Pode haver o caso de haver fornecedores, mas estes não estiverem com produtos cadastrados."""
         return self.fornecedores_data["fornecedor"].tolist()
 
     def get_column_data_estoque(self, column_name: str) -> list:
         """colunas do estoque: id,produto,fornecedor,preco_compra,preco_venda,qtd,data,tempo"""
         return self.estoque_data[column_name].tolist()
+
+    def get_produtos(self):
+        """Retorna toda a planinha de produtos no formato List[List[str]]"""
+        return self.produtos_data.to_numpy().tolist()
+
+    def get_fornecedores(self):
+        """Retorna toda a planinha de fornecedores no formato List[List[str]]"""
+        return self.fornecedores_data.to_numpy().tolist()
 
     @staticmethod
     def generate_id():
@@ -94,4 +102,4 @@ class DataManager:
 if __name__ == "__main__":
     data_manager = DataManager()
     t = data_manager.get_produtos_and_fornecedor()[0]
-    print(t)
+    print(data_manager.get_produtos())
