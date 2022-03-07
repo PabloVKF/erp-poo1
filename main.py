@@ -16,6 +16,6 @@ if __name__ == "__main__":
         themename="litera",
         resizable=(False, False)
     )
-    Application(app)
+    Application(master=app)
     app.protocol("WM_DELETE_WINDOW", on_closing)
     app.mainloop()

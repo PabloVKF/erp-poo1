@@ -5,7 +5,7 @@ id,produto,fornecedor
 3,Celular,Samsung
 11,Celular,Apple
 4,Camiseta,Renner
-4,Camiseta,Riachuelo
+42,Camiseta,Riachuelo
 5,Fone,Apple
 12,Fone,Samsung
 13,Fone,Microsoft
@@ -14,3 +14,5 @@ id,produto,fornecedor
 8,Carregador,Apple
 9,Meia,Renner49eb9
 7153b,Arroto,Microsoft
+a6880,Fe,Riachuelo
+61082,Salgadinho,Renner

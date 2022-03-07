@@ -1,5 +1,4 @@
 from csv import writer
-
 import pandas as pd
 import uuid
 
@@ -20,12 +19,29 @@ class DataManager:
         self.produtos_data: pd.DataFrame = pd.read_csv(self.produtos_directory)
 
         self.fornecedores_directory = "dados/fornecedores.csv"
-        self.fornecedores_data: pd.DataFrame = pd.read_csv(
-            self.fornecedores_directory
-        )
+        self.fornecedores_data: pd.DataFrame = pd.read_csv(self.fornecedores_directory)
+
+    def update_estoque(self) -> None:
+        self.estoque_data: pd.DataFrame = pd.read_csv(self.estoque_directory)
+
+    def update_compras(self) -> None:
+        self.compras_data: pd.DataFrame = pd.read_csv(self.compras_directory)
+
+    def update_vendas(self) -> None:
+        self.vendas_data: pd.DataFrame = pd.read_csv(self.vendas_directory)
+
+    def update_produtos(self) -> None:
+        self.produtos_data: pd.DataFrame = pd.read_csv(self.produtos_directory)
+
+    def update_fornecedores(self) -> None:
+        self.fornecedores_data: pd.DataFrame = pd.read_csv(self.fornecedores_directory)
 
     def update_data(self) -> None:
-        self.estoque_data: pd.DataFrame = pd.read_csv(self.estoque_directory)
+        self.update_estoque()
+        self.update_produtos()
+        self.update_vendas()
+        self.update_compras()
+        self.update_fornecedores()
 
     def insert_row(self, dir_index: int, row: str) -> None:
         """
@@ -53,6 +69,8 @@ class DataManager:
             writer_object = writer(file_object)
             writer_object.writerow(row)
 
+        self.update_data()
+
     def delete_row(self, index_data: int):
         with open(self.estoque_directory, "r") as file:
             r: list = file.read().split()
@@ -78,13 +96,33 @@ class DataManager:
         enquanto a segunda, seus respectivos fornecedores, mas sem repetição."""
         return self.produtos_data["produto"].tolist(), self.produtos_data["fornecedor"].tolist()
 
-    def get_fornecedores(self):
+    def get_fornecedores_name(self):
         """Pode haver o caso de haver fornecedores, mas estes não estiverem com produtos cadastrados."""
         return self.fornecedores_data["fornecedor"].tolist()
 
     def get_column_data_estoque(self, column_name: str) -> list:
         """colunas do estoque: id,produto,fornecedor,preco_compra,preco_venda,qtd,data,tempo"""
         return self.estoque_data[column_name].tolist()
+
+    def get_produtos(self):
+        """Retorna toda a planinha de produtos no formato List[List[str]]"""
+        return self.produtos_data.to_numpy().tolist()
+
+    def get_fornecedores(self):
+        """Retorna toda a planinha de fornecedores no formato List[List[str]]"""
+        return self.fornecedores_data.to_numpy().tolist()
+
+    def get_compras(self):
+        """Retorna toda a planinha de compras no formato List[List[str]]"""
+        return self.compras_data.to_numpy().tolist()
+
+    def get_vendas(self):
+        """Retorna toda a planinha de vendas no formato List[List[str]]"""
+        return self.vendas_data.to_numpy().tolist()
+
+    def get_estoque(self):
+        """Retorna toda a planinha de estoque no formato List[List[str]]"""
+        return self.estoque_data.to_numpy().tolist()
 
     @staticmethod
     def generate_id():
@@ -94,4 +132,4 @@ class DataManager:
 if __name__ == "__main__":
     data_manager = DataManager()
     t = data_manager.get_produtos_and_fornecedor()[0]
-    print(t)
+    print(data_manager.get_produtos())
