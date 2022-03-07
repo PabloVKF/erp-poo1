@@ -127,7 +127,7 @@ class DataManager:
         """Pode haver o caso de haver fornecedores, mas estes não estiverem com produtos cadastrados."""
         return self.fornecedores_data["fornecedor"].tolist()
 
-    def get_column_data_estoque(self, column_name: str) -> list:a
+    def get_column_data_estoque(self, column_name: str) -> list:
         """colunas do estoque: id,produto,fornecedor,preco_compra,preco_venda,qtd,data,tempo"""
         return self.estoque_data[column_name].tolist()
 
