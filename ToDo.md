@@ -8,6 +8,9 @@
 
 ## APPLICATIONS
 
+- Botao + Action Deletar Produto
+- Botao + Action Deletar Fornecedor
+
 - Lista de Produtos
 - Lista de Fornecedores
 - Lista de Compras
