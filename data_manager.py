@@ -1,4 +1,4 @@
-from csv import writer
+from csv import writer, reader
 import pandas as pd
 import uuid
 
@@ -7,7 +7,8 @@ class DataManager:
     def __init__(self):
 
         self.estoque_directory = "dados/estoque.csv"
-        self.estoque_data: pd.DataFrame = pd.read_csv(self.estoque_directory)
+        self.estoque_data: pd.DataFrame = pd.read_csv(
+            self.estoque_directory, index_col="id")
 
         self.compras_directory = "dados/registro_compras.csv"
         self.compras_data: pd.DataFrame = pd.read_csv(self.compras_directory)
@@ -19,7 +20,24 @@ class DataManager:
         self.produtos_data: pd.DataFrame = pd.read_csv(self.produtos_directory)
 
         self.fornecedores_directory = "dados/fornecedores.csv"
-        self.fornecedores_data: pd.DataFrame = pd.read_csv(self.fornecedores_directory)
+        self.fornecedores_data: pd.DataFrame = pd.read_csv(
+            self.fornecedores_directory
+        )
+
+        self.directory_dict: dict = {
+            "estoque": self.estoque_directory,
+            "fornecedores": self.fornecedores_directory,
+            "produtos": self.produtos_directory,
+            "compras": self.compras_directory,
+            "vendas": self.vendas_directory
+        }
+        self.dataframe_dict: dict = {
+            "estoque": self.estoque_data,
+            "fornecedores": self.fornecedores_data,
+            "produtos": self.produtos_data,
+            "compras": self.compras_data,
+            "vendas": self.vendas_data,
+        }
 
     def update_estoque(self) -> None:
         self.estoque_data: pd.DataFrame = pd.read_csv(self.estoque_directory)
@@ -34,7 +52,8 @@ class DataManager:
         self.produtos_data: pd.DataFrame = pd.read_csv(self.produtos_directory)
 
     def update_fornecedores(self) -> None:
-        self.fornecedores_data: pd.DataFrame = pd.read_csv(self.fornecedores_directory)
+        self.fornecedores_data: pd.DataFrame = pd.read_csv(
+            self.fornecedores_directory)
 
     def update_data(self) -> None:
         self.update_estoque()
@@ -65,18 +84,26 @@ class DataManager:
         row: list = row.split(",")
         row.insert(0, id)
 
-        with open(directories[dir_index], "a", newline="\n") as file_object:
+        with open(file=directories[dir_index], mode="a", newline="\n") as file_object:
             writer_object = writer(file_object)
             writer_object.writerow(row)
 
         self.update_data()
 
-    def delete_row(self, index_data: int):
-        with open(self.estoque_directory, "r") as file:
-            r: list = file.read().split()
-            for line in r:
-                print(line)
-            file = r.pop(index_data)
+    def delete_row(self, dataframe_name: str, term_to_delete: str):
+        """Deleta qualquer linha do dataframe que contenha o termo."""
+        lines: list = []
+        dir: pd.DataFrame = self.directory_dict[dataframe_name]
+        with open(file=dir, mode='r') as readFile:
+            reader_object = reader(readFile)
+            for row in reader_object:
+                lines.append(row)
+                for field in row:
+                    if field == term_to_delete:
+                        lines.remove(row)
+        with open(file=dir, mode='w', newline="") as writeFile:
+            writer_object = writer(writeFile)
+            writer_object.writerows(lines)
 
     def delete_item_everywhere(self, column_name: str, item_name: str) -> None:
         """
@@ -105,23 +132,23 @@ class DataManager:
         return self.estoque_data[column_name].tolist()
 
     def get_produtos(self):
-        """Retorna toda a planinha de produtos no formato List[List[str]]"""
+        """Retorna toda a planinha de produtos no formato list[list[str]]"""
         return self.produtos_data.to_numpy().tolist()
 
     def get_fornecedores(self):
-        """Retorna toda a planinha de fornecedores no formato List[List[str]]"""
+        """Retorna toda a planinha de fornecedores no formato list[list[str]]"""
         return self.fornecedores_data.to_numpy().tolist()
 
     def get_compras(self):
-        """Retorna toda a planinha de compras no formato List[List[str]]"""
+        """Retorna toda a planinha de compras no formato list[list[str]]"""
         return self.compras_data.to_numpy().tolist()
 
     def get_vendas(self):
-        """Retorna toda a planinha de vendas no formato List[List[str]]"""
+        """Retorna toda a planinha de vendas no formato list[list[str]]"""
         return self.vendas_data.to_numpy().tolist()
 
     def get_estoque(self):
-        """Retorna toda a planinha de estoque no formato List[List[str]]"""
+        """Retorna toda a planinha de estoque no formato list[list[str]]"""
         return self.estoque_data.to_numpy().tolist()
 
     @staticmethod
@@ -131,5 +158,3 @@ class DataManager:
 
 if __name__ == "__main__":
     data_manager = DataManager()
-    t = data_manager.get_produtos_and_fornecedor()[0]
-    print(data_manager.get_produtos())
