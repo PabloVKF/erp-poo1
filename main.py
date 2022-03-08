@@ -12,7 +12,7 @@ def on_closing():
 
 if __name__ == "__main__":
     app = ttk.Window(
-        title="ERP tunado",
+        title="ERP Tunado",
         themename="litera",
         resizable=(False, False)
     )

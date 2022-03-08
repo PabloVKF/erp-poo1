@@ -94,26 +94,16 @@ class DataManager:
         """Deleta qualquer linha do dataframe que contenha o termo."""
         lines: list = []
         dir: pd.DataFrame = self.directory_dict[dataframe_name]
-        with open(file=dir, mode='r') as readFile:
-            reader_object = reader(readFile)
+        with open(file=dir, mode='r') as read_file:
+            reader_object = reader(read_file)
             for row in reader_object:
                 lines.append(row)
                 for field in row:
                     if field == term_to_delete:
                         lines.remove(row)
-        with open(file=dir, mode='w', newline="") as writeFile:
-            writer_object = writer(writeFile)
+        with open(file=dir, mode='w', newline="") as write_file:
+            writer_object = writer(write_file)
             writer_object.writerows(lines)
-
-    def delete_item_everywhere(self, column_name: str, item_name: str) -> None:
-        """
-        Apaga todas as linhas que possuem item_name.
-        O correto seria passar apenas o index ou id da linha a ser deletada.
-        column_name: "produto"
-        item_name:   "Camiseta"
-        """
-        self.estoque_data = self.estoque_data.set_index(column_name)
-        self.estoque_data = self.estoque_data.drop(item_name, axis=0)
 
     def save_data(self) -> None:
         self.estoque_data.to_csv(self.estoque_directory)
@@ -158,3 +148,5 @@ class DataManager:
 
 if __name__ == "__main__":
     data_manager = DataManager()
+    e = data_manager.get_estoque()
+    print(e)
