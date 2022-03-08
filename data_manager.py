@@ -93,15 +93,15 @@ class DataManager:
     def delete_row(self, dataframe_name: str, term_to_delete: str):
         """Deleta qualquer linha do dataframe que contenha o termo."""
         lines: list = []
-        dir: pd.DataFrame = self.directory_dict[dataframe_name]
-        with open(file=dir, mode='r') as read_file:
+        dir_data: str = self.directory_dict[dataframe_name]
+        with open(file=dir_data, mode='r') as read_file:
             reader_object = reader(read_file)
             for row in reader_object:
                 lines.append(row)
                 for field in row:
                     if field == term_to_delete:
                         lines.remove(row)
-        with open(file=dir, mode='w', newline="") as write_file:
+        with open(file=dir_data, mode='w', newline="") as write_file:
             writer_object = writer(write_file)
             writer_object.writerows(lines)
 

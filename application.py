@@ -234,9 +234,8 @@ class Estoque(ttk.Frame):
             master=self,
             style=INFO
         )
-        self.tree['columns'] = ("id", "produto", "fornecedor", "preco_compra", "preco_venda", "qtd", "data", "tempo")
+        self.tree['columns'] = ("produto", "fornecedor", "preco_compra", "preco_venda", "qtd", "data", "tempo")
         self.tree.column("#0", anchor=CENTER, width=0, minwidth=0, stretch=NO)
-        self.tree.column("id", anchor=CENTER, width=20, minwidth=0)
         self.tree.column("produto", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("fornecedor", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("preco_compra", anchor=CENTER, width=40, minwidth=0)
@@ -245,7 +244,6 @@ class Estoque(ttk.Frame):
         self.tree.column("data", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("tempo", anchor=CENTER, width=80, minwidth=0)
         self.tree.heading("#0", text="Label")
-        self.tree.heading("id", text="ID")
         self.tree.heading("produto", text="Produto")
         self.tree.heading("fornecedor", text="Fornecedor")
         self.tree.heading("preco_compra", text="Preço de compra")
@@ -263,7 +261,7 @@ class Estoque(ttk.Frame):
             self.tree.insert(
                 parent='',
                 index=END,
-                iid=row[0],
+                iid=(str(row[0]) + ' ' + str(row[1])),
                 values=row
             )
 

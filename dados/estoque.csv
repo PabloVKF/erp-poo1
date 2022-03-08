@@ -8,7 +8,6 @@ id,produto,fornecedor,preco_compra,preco_venda,qtd,data,tempo
 7,Camiseta,Riachuelo,12.00,14.47,22,21/02/2022,00:09:41
 8,Monitor,Apple,14.00,24.47,3,30/12/2021,15:27:35
 9,Carregador,Renner,20.00,32.73,1,09/01/2022,02:44:40
-10,Monitor,Apple,14.00,15.34,17,01/02/2022,12:36:54
 11,Celular,Samsung,4.00,5.69,17,12/02/2022,22:17:00
 12,Fone,Microsoft,13.00,24.87,4,24/12/2021,22:02:41
 13,Meia,Apple,5.00,7.60,9,26/01/2022,11:13:17
