@@ -1,22 +1,6 @@
 # TO DO LIST DO PROJETO
 
-## DATABASE
-
-- [X] Delete Rows Function
-- [ ] Estoque Function:
-  - [ ] verificar se existe a mesma id em compras e vendas. caso exista, deletar pelo respectivo index
-
-## APPLICATIONS
-
-- [ ] Botao + Action Deletar Produto
-- [ ] Botao + Action Deletar Fornecedor
-
-- [X] Lista de Produtos
-- [X] Lista de Fornecedores
-- [X] Lista de Compras
-- [X] Lista de Vendas
-
-## EXTRAS
-
-- [ ] Graficos / Dashboard
-- [ ] Otimizar ainda mais o codigo
+- PopUp de Sucesso mesmo quando tem qtd a menos do q quer vender
+- Nao inserir Venda no registro_vendas quando dá erro no estoque
+- Remover Preço de Venda e Compra do Estoque
+- Partir pra Gravation

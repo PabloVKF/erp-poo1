@@ -1,14 +1,13 @@
-from tkinter.messagebox import *
-from tkinter.font import BOLD
-from turtle import width
-from ttkbootstrap.constants import *
-from datetime import date, datetime
-
 import tkinter.messagebox
-import ttkbootstrap as ttk
+from datetime import date, datetime
+from tkinter.font import BOLD
+from tkinter.messagebox import *
 
-from data_manager import DataManager
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
+
 from constantes.directory_paths import *
+from data_manager import DataManager
 
 
 class Application(ttk.Frame):
@@ -234,8 +233,9 @@ class Estoque(ttk.Frame):
             master=self,
             style=INFO
         )
-        self.tree['columns'] = ("produto", "fornecedor", "preco_compra", "preco_venda", "qtd", "data", "tempo")
+        self.tree['columns'] = ("id", "produto", "fornecedor", "preco_compra", "preco_venda", "qtd", "data", "tempo")
         self.tree.column("#0", anchor=CENTER, width=0, minwidth=0, stretch=NO)
+        self.tree.column("id", anchor=CENTER, width=20, minwidth=0)
         self.tree.column("produto", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("fornecedor", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("preco_compra", anchor=CENTER, width=40, minwidth=0)
@@ -244,6 +244,7 @@ class Estoque(ttk.Frame):
         self.tree.column("data", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("tempo", anchor=CENTER, width=80, minwidth=0)
         self.tree.heading("#0", text="Label")
+        self.tree.heading("id", text="ID")
         self.tree.heading("produto", text="Produto")
         self.tree.heading("fornecedor", text="Fornecedor")
         self.tree.heading("preco_compra", text="Preço de compra")
@@ -267,8 +268,6 @@ class Estoque(ttk.Frame):
 
     def clean_tree(self):
         self.tree.delete(*self.tree.get_children())
-
-
 
 
 class ComprasVendas(ttk.Frame):
@@ -335,8 +334,7 @@ class CadastroCompras(ttk.Frame):
         )
         self.lbl_title.pack(pady=5)
 
-        self.lista_produtos: list = self.data_manager.get_produtos_and_fornecedor()[
-            0]
+        self.lista_produtos: list = self.data_manager.get_nome_produtos()
         self.lista_produtos = list(set(self.lista_produtos))
 
         self.combobox_produto = ttk.Combobox(
@@ -346,8 +344,7 @@ class CadastroCompras(ttk.Frame):
         self.combobox_produto.insert(0, "Produto")
         self.combobox_produto.pack(pady=2)
 
-        self.lista_fornecedores: list = self.data_manager.get_produtos_and_fornecedor()[
-            1]
+        self.lista_fornecedores: list = self.data_manager.get_nome_fornecedores()
         self.lista_fornecedores = list(set(self.lista_fornecedores))
 
         self.combobox_fornecedor = ttk.Combobox(
@@ -388,11 +385,20 @@ class CadastroCompras(ttk.Frame):
         self.btn_action = ttk.Button(
             self,
             style="success.TButton",
-            text="Vendido!",
+            text="Comprar!",
             width=47,
             command=self.popup_confirmacao
         )
         self.btn_action.pack(pady=2)
+
+        self.btn_delete = ttk.Button(
+            self,
+            style="danger.TButton",
+            text="Deletar registros selecionados",
+            width=47,
+            command=self._bind_delete
+        )
+        self.btn_delete.pack(pady=2)
 
     def update_tree(self):
         self.clean_tree()
@@ -407,6 +413,17 @@ class CadastroCompras(ttk.Frame):
 
     def clean_tree(self):
         self.tree.delete(*self.tree.get_children())
+
+    def _bind_delete(self):
+        to_delete: list = []
+        for iid in self.tree.selection():
+            row: str = self.tree.item(iid, 'values')
+            to_delete.append(row[0])
+        self.data_manager.delete_row(
+            dataframe_name="compras",
+            ids_to_delete=to_delete
+        )
+        self.update_tree()
 
     def popup_confirmacao(self):
         row_compra = ','.join([
@@ -431,7 +448,6 @@ class CadastroCompras(ttk.Frame):
             )
         else:
             print("Dados não confirmados.")
-
 
 class CadastroVendas(ttk.Frame):
     def __init__(self, data_manager, *args, **kwargs):
@@ -470,8 +486,7 @@ class CadastroVendas(ttk.Frame):
         )
         self.lbl_title.pack(pady=5)
 
-        self.lista_produtos: list = self.data_manager.get_produtos_and_fornecedor()[
-            0]
+        self.lista_produtos: list = self.data_manager.get_nome_produtos()
         self.lista_produtos = list(set(self.lista_produtos))
 
         self.combobox_produto = ttk.Combobox(
@@ -481,8 +496,7 @@ class CadastroVendas(ttk.Frame):
         self.combobox_produto.insert(0, "Produto")
         self.combobox_produto.pack(pady=2)
 
-        self.lista_fornecedores: list = self.data_manager.get_produtos_and_fornecedor()[
-            1]
+        self.lista_fornecedores: list = self.data_manager.get_nome_fornecedores()
         self.lista_fornecedores = list(set(self.lista_fornecedores))
 
         self.combobox_fornecedor = ttk.Combobox(
@@ -529,9 +543,18 @@ class CadastroVendas(ttk.Frame):
         )
         self.btn_action.pack(pady=2)
 
+        self.btn_delete = ttk.Button(
+            self,
+            style="danger.TButton",
+            text="Deletar registros selecionados",
+            width=47,
+            command=self._bind_delete
+        )
+        self.btn_delete.pack(pady=2)
+
     def update_tree(self):
         self.clean_tree()
-        registros: list = self.data_manager.get_compras()
+        registros: list = self.data_manager.get_vendas()
         for row in registros:
             self.tree.insert(
                 parent='',
@@ -542,6 +565,17 @@ class CadastroVendas(ttk.Frame):
 
     def clean_tree(self):
         self.tree.delete(*self.tree.get_children())
+
+    def _bind_delete(self):
+        to_delete: list = []
+        for iid in self.tree.selection():
+            row: str = self.tree.item(iid, 'values')
+            to_delete.append(row[0])
+        self.data_manager.delete_row(
+            dataframe_name="vendas",
+            ids_to_delete=to_delete
+        )
+        self.update_tree()
 
     def popup_confirmacao(self):
         row_compra = ','.join([
@@ -599,7 +633,7 @@ class CadastroProduto(ttk.Frame):
     def __init__(self, data_manager, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.data_manager = data_manager
+        self.data_manager: DataManager = data_manager
 
         self.tree_produtos = ttk.Treeview(
             master=self,
@@ -631,14 +665,14 @@ class CadastroProduto(ttk.Frame):
         self.novo_produto.insert(0, "Nome do Novo Produto")
         self.novo_produto.pack(pady=5)
 
-        self.nome_forecedores: list = self.data_manager.get_produtos_and_fornecedor()[
-            1]
-        self.nome_forecedores = list(set(self.nome_forecedores))
+        self.nome_fornecedores: list = self.data_manager.get_nome_fornecedores()
+        self.nome_fornecedores = list(set(self.nome_fornecedores))
 
         self.combobox_fornecedor = ttk.Combobox(
             self,
             width=47,
-            values=self.nome_forecedores)
+            values=self.nome_fornecedores
+        )
         self.combobox_fornecedor.insert(0, "Fornecedores")
         self.combobox_fornecedor.pack(pady=5)
 
@@ -651,13 +685,14 @@ class CadastroProduto(ttk.Frame):
         )
         self.btn_action.pack(pady=5)
 
-        self.btn_delet = ttk.Button(
+        self.btn_delete = ttk.Button(
             master=self,
+            command=self._bind_delete,
             text="Deletar produtos selecionados!",
             width=47,
             style=DANGER
         )
-        self.btn_delet.pack(pady=5)
+        self.btn_delete.pack(pady=5)
 
     def update_tree(self):
         self.clean_tree()
@@ -666,12 +701,22 @@ class CadastroProduto(ttk.Frame):
             self.tree_produtos.insert(
                 parent='',
                 index=END,
-                iid=row[0],
                 values=row
             )
 
     def clean_tree(self):
         self.tree_produtos.delete(*self.tree_produtos.get_children())
+
+    def _bind_delete(self):
+        to_delete: list = []
+        for iid in self.tree_produtos.selection():
+            row: str = self.tree_produtos.item(iid, 'values')
+            to_delete.append(row[0])
+        self.data_manager.delete_row(
+            "produtos",
+            ids_to_delete=to_delete
+        )
+        self.update_tree()
 
     def popup_confirmacao(self):
         self.row_produto = f"{self.novo_produto.get()},{self.combobox_fornecedor.get()}"
@@ -737,13 +782,14 @@ class CadastroFornecedor(ttk.Frame):
         )
         self.btn_action.pack(pady=10)
 
-        self.btn_delet = ttk.Button(
+        self.btn_delete = ttk.Button(
             master=self,
+            command=self._bind_delete,
             text="Deletar fornecedores selecionados!",
             width=47,
             style=DANGER
         )
-        self.btn_delet.pack(pady=(10, 20))
+        self.btn_delete.pack(pady=(10, 20))
 
     def update_tree(self):
         self.clean_tree()
@@ -758,6 +804,17 @@ class CadastroFornecedor(ttk.Frame):
 
     def clean_tree(self):
         self.tree_fornecedores.delete(*self.tree_fornecedores.get_children())
+
+    def _bind_delete(self):
+        to_delete: list = []
+        for iid in self.tree_fornecedores.selection():
+            row: str = self.tree_fornecedores.item(iid, 'values')
+            to_delete.append(row[0])
+        self.data_manager.delete_row(
+            "fornecedores",
+            ids_to_delete=to_delete
+        )
+        self.update_tree()
 
     def popup_confirmacao(self):
 
@@ -819,25 +876,26 @@ class CadastroCompraVenda(ttk.Frame):
         )
         self.lbl_title.pack()
 
-        self.lista_produtos: list = self.data_manager.get_produtos_and_fornecedor()[
+        self.lista_produtos: list = self.data_manager.getpr()[
             0]
         self.lista_produtos = list(set(self.lista_produtos))
 
         self.combobox_produto = ttk.Combobox(
             self,
             width=47,
-            values=self.lista_produtos)
+            values=self.lista_produtos
+        )
         self.combobox_produto.insert(0, "Produto")
         self.combobox_produto.pack()
 
-        self.lista_fornecedores: list = self.data_manager.get_produtos_and_fornecedor()[
-            1]
+        self.lista_fornecedores: list = self.data_manager.get_nome_fornecedores()
         self.lista_fornecedores = list(set(self.lista_fornecedores))
 
         self.combobox_fornecedor = ttk.Combobox(
             self,
             width=47,
-            values=self.lista_fornecedores)
+            values=self.lista_fornecedores
+        )
         self.combobox_fornecedor.insert(0, "Fornecedor")
         self.combobox_fornecedor.pack()
 
@@ -845,7 +903,8 @@ class CadastroCompraVenda(ttk.Frame):
             self,
             from_=1,
             to=99,
-            width=45)
+            width=45
+        )
         self.spinbox_quantidade.insert(0, "Quantidade")
         self.spinbox_quantidade.pack()
 
