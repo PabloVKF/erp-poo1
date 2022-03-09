@@ -441,6 +441,7 @@ class CadastroCompras(ttk.Frame):
         )
         if confirmation:
             self.data_manager.insert_row(3, row_compra)
+            self.update_tree()
 
             showinfo(
                 title="SUCESSO!",
@@ -448,6 +449,7 @@ class CadastroCompras(ttk.Frame):
             )
         else:
             print("Dados não confirmados.")
+
 
 class CadastroVendas(ttk.Frame):
     def __init__(self, data_manager, *args, **kwargs):
@@ -593,6 +595,7 @@ class CadastroVendas(ttk.Frame):
         )
         if confirmation:
             self.data_manager.insert_row(4, row_compra)
+            self.update_tree()
         else:
             print("Dados não confirmados.")
 
@@ -829,8 +832,6 @@ class CadastroFornecedor(ttk.Frame):
             )
         else:
             print("Dados não confirmados.")
-
-        '''BOTAR OS WIDGETS FINAIS AQUI'''
 
 
 class CadastroCompraVenda(ttk.Frame):

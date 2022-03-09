@@ -82,21 +82,25 @@ class DataManager:
         id_generated = str(self.generate_id())
         row: list = row.split(",")
         row.insert(0, id_generated)
+        print(row)
 
         all_right = True
         if dir_index == 3:
-            self._add_on_estoque(row)
+            row_compra = row.copy()
+            self._add_on_estoque(row_compra)
         elif dir_index == 4:
             try:
-                self._remove_from_estoque(row)
+                row_venda = row.copy()
+                self._remove_from_estoque(row_venda)
             except ValueError:
                 all_right = False
 
+        print(row)
         if all_right:
             with open(file=directories[dir_index], mode="a", newline="\n") as file_object:
                 writer_object = writer(file_object)
                 writer_object.writerow(row)
-                self.update_data()
+            self.update_data()
 
     def delete_row(self, dataframe_name: str, ids_to_delete: list):
         """Deleta qualquer linha do dataframe que contenha o termo."""

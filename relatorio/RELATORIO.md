@@ -145,7 +145,8 @@ suficiente para torná-los realidade.
 
 ## **Link do Vídeo da Equipe**
 
-??????????????? LINK DO VIDEO DA EQUIPE
+Parte 1 - https://youtu.be/XXxK7uIZ3Wk
+Parte 2 - https://youtu.be/czZjbTMgOhs
 
 ## **REFERÊNCIAS**
 
