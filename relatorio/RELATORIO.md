@@ -1,9 +1,20 @@
-# **Funcionamento da Aplicação**
+# **ERP-POO1**
+
+Trabalho para a disciplina de Programação Orientada a Objetos 1 na Universidade Federal do Estado de Santa Catarina.
+
+## **FUNCIONAMENTO DA APLICAÇÃO**
+
+Os próximos tópicos estão destinados a apresentar o funcionamento da aplicação desenvolvida pela equipe.
+
+## **Lib escolhida**
+Python possui diversas libs poderosas que para o desenvolvimanto de interfaces graficas (Kivy, PyGTK, QT e muitas 
+outras). Optamos pelo ttkbootestrap por possuir grande parte dos widgets do tkinter mas apresentado uma aparencia 
+moderna, inspirada no Bootstrap, um dos framaworks mais populares da linguagem JavaScript.
 
 ## **O que ela faz**
 
 A ideia inicial da aplicação era de tentar simular, de maneira simplificada, um Gestor de Estoques. Dessa forma, as
-principais atividades exercicidas seriam:
+principais atividades exercidas seriam:
 
 - Realizar o cadastro das entradas e saídas;
 - Retornar o estoque existente.
@@ -31,7 +42,7 @@ ficaria mais elegante e interessante.
 Nesta tela não foi colocada nenhuma interação com o usuário, visto que seu objetivo está apenas em mostrar os resultados
 obtidos.
 
-![This is an image](estoque.PNG)
+![This is an image](Telas/estoque.PNG)
 
 ### **Compras & Vendas**
 
@@ -52,7 +63,7 @@ Após o preenchimento dos dados corretos, o botão verde realiza o cadastro no r
 vermelho, o remove. Além disso, o banco de dados é atualizado toda vez que um item for cadastrado ou removido. Este
 processo pode ser visualizado na lista em tempo real.
 
-![This is an image](compras.PNG)
+![This is an image](Telas/comprasvendas.PNG)
 
 ### **Cadastro**
 
@@ -72,7 +83,7 @@ Desse modo, os únicos campos de cadastro necessários para fazer o estoque func
 Estamos cientes que existem diversas outras maneiras para permitir que o usuário realize este cadastro, mas optamos por
 fazer algo diferente e que manteve o padrão visual dos registros de compras e vendas.
 
-![This is an image](cadastro.PNG)
+![This is an image](Telas/cadastro.PNG)
 
 ## **Como Executar a Aplicação**
 
@@ -82,7 +93,7 @@ Basta executar o arquivo main.py
 
 ERP Tunado
 
-## **Conceitos de OOP Utilizados e Por que**
+## **Conceitos de OOP Utilizados e Por quê**
 
 ### **Classes, Objetos e Herança**
 
@@ -90,22 +101,18 @@ Facilitam a organização e reutilização dos códigos. Optamos por fazer de ca
 código mais legível e de mais fácil manutenção, pois sabemos exatamente onde procurar no código quando determinada
 atividade da aplicação não está funcionando de acordo.
 
-Para exemplificar, fica fácil de perceber na imagem abaixo que todos os componentes que fazem parte do Banner da
-aplicação estão contidos na classe 'Banner', como as duas labels e a imagem "logo" utilizada na primeira.
+Para exemplificar, fica fácil de perceber, na imagem abaixo, que todos os componentes que fazem parte do Banner da
+aplicação estão contidos na classe 'Banner', e que esta contém duas labels e a imagem "logo", sendo esta utilizada na primeira label.
 
-![This is an image](banner.PNG)
+Além disso, a classe Banner está herdando os métodos e atributos da classe Frame. Desse modo, as labels estão contidas neste frame, fazendo com que, ao instanciar a classe Banner, estas sejam executadas. 
 
-### **Polimorfismo**
+![This is an image](OOP/banner.PNG)
 
-Excelente para organização do código-fonte, pois conseguimos deixá-lo muito mais enxuto, sem
+A imagem abaixo possui semelhança à de cima, porém estamos usando classes desenvolvidas por nós mesmos. Nela, é possível perceber como a utilização da orientação a objetos permite uma maior compreensão na leitura do código.
 
-??????????????????? FOTO DO CODIGO
+Isso se deve, pois, fica evidente que o Banner e a MenuBar da aplicação, criados pela equipe, fazem parte do Header da mesma, inserindo apenas os parâmetros necessários, além de facilitar na hora de posicionar o elemento no frame em questão.
 
-### **Encapsulamento**
-
-Facilitam a organização e reutilização dos códigos.
-
-??????????????????? FOTO DO CODIGO
+![This is an image](OOP/header.PNG)
 
 ## **Papel de Cada Membro da Equipe**
 
@@ -130,7 +137,7 @@ imagens ao invés de abas monótonas, as listas mostrando o cadastro sendo reali
 
 Não obstante, nos esforçamos para deixar o código-fonte próximo do aceitável, conforme os padrões da comunidade de
 desenvolvimento. Desse modo, tentamos nomear as variáveis, funções e classes de maneira mais eficiente; separamos os
-maiores grupos em arquivos distintos; tentamos reutilizar códigos; e procuramos organizar as funcoes e classes de
+maiores grupos em arquivos distintos; tentamos reutilizar códigos; e procuramos organizar as funções e classes de
 maneira a tornar o código mais legível.
 
 Gostaríamos de ter deixado o código ainda melhor e com mais funcionalidades, mas não conseguimos planejar tempo
@@ -139,3 +146,21 @@ suficiente para torná-los realidade.
 ## **Link do Vídeo da Equipe**
 
 ??????????????? LINK DO VIDEO DA EQUIPE
+
+## **REFERÊNCIAS**
+
+### **Imagens Utilizadas**
+
+- Logo: https://www.flaticon.com/br/autores/freepik
+- Vendas: https://www.flaticon.com/br/autores/tomas-knop
+- Estoque: https://www.flaticon.com/authors/icongeek26
+- Compras: https://www.freepik.com
+- Configurações: https://www.flaticon.com/authors/gregor-cresnar-premium
+
+### **Documentações Utilizadas**
+
+- ttkbootstrap: https://ttkbootstrap.readthedocs.io/en/latest/
+- tkinter: https://docs.python.org/3/library/tk.html
+- pandas: https://pandas.pydata.org/docs/
+- matplotlib: https://matplotlib.org/
+- seaborn: https://seaborn.pydata.org/

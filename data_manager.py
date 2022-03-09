@@ -83,16 +83,20 @@ class DataManager:
         row: list = row.split(",")
         row.insert(0, id_generated)
 
-        with open(file=directories[dir_index], mode="a", newline="\n") as file_object:
-            writer_object = writer(file_object)
-            writer_object.writerow(row)
-
-        self.update_data()
-
+        all_right = True
         if dir_index == 3:
             self._add_on_estoque(row)
         elif dir_index == 4:
-            self._remove_from_estoque(row)
+            try:
+                self._remove_from_estoque(row)
+            except ValueError:
+                all_right = False
+
+        if all_right:
+            with open(file=directories[dir_index], mode="a", newline="\n") as file_object:
+                writer_object = writer(file_object)
+                writer_object.writerow(row)
+                self.update_data()
 
     def delete_row(self, dataframe_name: str, ids_to_delete: list):
         """Deleta qualquer linha do dataframe que contenha o termo."""
@@ -181,6 +185,7 @@ class DataManager:
                 title="Erro!",
                 message="Você não tem esse produto no estoque!"
             )
+            raise ValueError
         else:
             estoque = estoque[0]
             iid = estoque[0]
@@ -190,9 +195,14 @@ class DataManager:
                     title="Erro!",
                     message="Você não tem esse montante no estoque!"
                 )
+                raise ValueError
             else:
                 self.estoque_data.loc[self.estoque_data['id'] == iid, 'qtd'] = quantidade
                 self.save_estoque_data()
+                messagebox.showinfo(
+                    title="SUCESSO!",
+                    message="Cadastro realizado com sucesso!"
+                )
 
 
 if __name__ == "__main__":

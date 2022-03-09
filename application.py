@@ -238,8 +238,8 @@ class Estoque(ttk.Frame):
         self.tree.column("id", anchor=CENTER, width=20, minwidth=0)
         self.tree.column("produto", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("fornecedor", anchor=CENTER, width=80, minwidth=0)
-        self.tree.column("preco_compra", anchor=CENTER, width=40, minwidth=0)
-        self.tree.column("preco_venda", anchor=CENTER, width=40, minwidth=0)
+        self.tree.column("preco_compra", anchor=CENTER, width=-0, minwidth=0, stretch=NO)
+        self.tree.column("preco_venda", anchor=CENTER, width=0, minwidth=0, stretch=NO)
         self.tree.column("qtd", anchor=CENTER, width=40, minwidth=0)
         self.tree.column("data", anchor=CENTER, width=80, minwidth=0)
         self.tree.column("tempo", anchor=CENTER, width=80, minwidth=0)
@@ -593,11 +593,6 @@ class CadastroVendas(ttk.Frame):
         )
         if confirmation:
             self.data_manager.insert_row(4, row_compra)
-
-            showinfo(
-                title="SUCESSO!",
-                message="Cadastro realizado com sucesso!"
-            )
         else:
             print("Dados não confirmados.")
 
